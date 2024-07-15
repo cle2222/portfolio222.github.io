@@ -1,0 +1,33 @@
+<script> 
+$(document).ready(function() { 
+    $('#pesquisaAnaliticoGeral').submit(function(e) { 
+        e.preventDefault();
+        $('#enviar').html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Pesquisando...');
+        $("#enviar").prop("disabled", true);
+    $.ajax({ 
+        type: 'POST', 
+        url: '/vendas/procedures/export_analitico_geral.php',
+        data: $('#pesquisaAnaliticoGeral').serialize(), 
+        success: function(response) {
+            var parts = response.trim().split('|');
+            var identificador = parts[0];
+            var mensagem = parts[1];
+
+            if(identificador === 'export_concluido'){
+                $('#mensagem').html(mensagem);
+                $('#popupMensagem').modal('show');
+                $('#enviar').html(' Buscar');
+                $('#enviar').prop('disabled', false);
+                $('#popupMensagem').on('hidden.bs.modal', function(){
+                    location.reload();
+                });
+            }else{
+                $('#mensagem').html(mensagem);
+                $('#popupMensagem').modal('show');
+                $('#enviar').html(' Buscar');
+                $('#enviar').prop('disabled', false);
+            }
+        }}); 
+    }); 
+});
+</script>
